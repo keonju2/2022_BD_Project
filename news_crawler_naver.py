@@ -54,11 +54,17 @@ def crawler(company,date_1,date_2,max_page):
             html = driver.page_source
             bs0bj = BeautifulSoup(html,'lxml')
             time.sleep(3)
+            try:
+                article = bs0bj.find('div',class_='art_txt').text
+                article = re.sub('\n','',article)
+                article = re.sub('\t', '', article)
+                total['Article'] = article
 
-            article = bs0bj.find('div',class_='art_txt').text
-            article = re.sub('\n','',article)
-            article = re.sub('\t', '', article)
-            total['Article'] = article
+            except:
+                article = bs0bj.find('div', class_='read_txt').text
+                article = re.sub('\n', '', article)
+                article = re.sub('\t', '', article)
+                total['Article'] = article
 
             total_result = total_result.append(total,ignore_index=True)
 
@@ -70,7 +76,7 @@ def crawler(company,date_1,date_2,max_page):
 finals = pd.DataFrame()
 
 for k in range(1,276):
-    final = crawler('네이버','2021.01.01','2021.6.30',str(k))
+    final = crawler('네이버','2021.01.01','2021.06.30',str(k))
     pd.concat([finals,final],ignore_index=True)
 
 for l in range(1,197):
